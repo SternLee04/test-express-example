@@ -1,4 +1,5 @@
-# REST api Deployments
+# REST API Deployments
+
 Serverless is **not** ideal for the backend but is **best** suited for the frontend.
 
 ## Vercel
@@ -8,81 +9,87 @@ Serverless is **not** ideal for the backend but is **best** suited for the front
 - Auto-scaling
 - Cost-effective 
 - Distributed network across the globe
-- Great for testing small project
+- Great for testing small projects
+
 #### Cons
-- Cold start(no total uptime)
-- Not recomanded for persistent connection(websocket or webRTCs)
-- Issues may arsie with frequent request send at one time to db or other api.
+- Cold starts (no guaranteed uptime)
+- Not recommended for persistent connections (e.g., WebSocket or WebRTC)
+- Issues may arise with frequent requests sent simultaneously
 
-_Refer read doc of Vercel's deployment on express for issues._
-### Deployment.
+_Refer to Vercel's documentation for deploying Express for further information on handling issues._
+
+### Deployment
 There are two ways to deploy: using the CLI or a GitHub repository.
-#### github way(preferd) : 
-```
--> add in package.json :  script 
 
-"start": "node index.js"
+#### GitHub Method (Preferred): 
+1. Add the following to `package.json` under `scripts`: 
+    ```json
+    "start": "node index.js"
+    ```
 
--> create vercel.json at root 
+2. Create a `vercel.json` file at the root:
+    ```json
+    { 
+        "version": 2, 
+        "builds": [{
+            "src": "./index.js",
+            "use": "@vercel/node"
+        }],
+        "routes": [{
+            "src": "/(.*)",
+            "dest": "/"
+        }]
+    }
+    ```
 
-{ 
-    "version": 2, 
-    "builds": [{
-        "src": "./index.js",
-        "use": "@vercel/node"
-    }],
-    "routes": [{
-        "src": "/(.*)",
-        "dest": "/"
-    }]
-}
+3. Update `index.js`:
+    ```javascript
+    const port = process.env.PORT || 3000;
 
--> change in index.js : 
+    module.exports = app;
+    ```
 
-const port = process.env.PORT || 3000;
+#### CLI Method: 
+1. Install the Vercel CLI globally:
+    ```bash
+    npx install -g vercel
+    ```
 
-module.exports = app;
-
-```
-#### cli way : 
-```
--> first install vercel cli globally 
-
-npx install -g vercel
-
--> add adding vercel.json
--> hit vercel in terminal and enter prompt(this repo has root source code)
-```
+2. Ensure `vercel.json` is in place, then run:
+    ```bash
+    vercel
+    ```
+   Follow the prompts (ensure this repo has the root source code).
 
 ## Render
 
-#### pros
-- server architecture (microservices)
-- precisistent connection 
-- total up time no cold start
-- easy issue fixing
+#### Pros
+- Server architecture (microservices)
+- Persistent connections 
+- Continuous uptime without cold starts
+- Easier issue resolution
 
-#### cons
-- no auto scale
-- cost on scale
-- no distributed network over globe
+#### Cons
+- No auto-scaling
+- Additional costs with scaling
+- Not globally distributed
 
-_make sure that repo is on github and visiblity is public_
-### Deployment.
-```
--> navigate to +New click on Web Service option.
--> in Soruce code section click on public git repos.
--> enter url of github repo
--> hit create button
--> check source code is repo that we want to target.
--> enter name field (preferd repo name)
--> select project and production (optional)
--> branch (preferd main as production) 
--> region (Oregon US west) no change
--> root directory(where the index.js is present if it already in root then left empty)
--> build command field : npm install (that applicable for frontends there no build of express.js + node.js but installation of package)
--> start command field : node index.js
--> instance type : select free
--> env variable : add manually key and value or add .env
--> hit deploy button
-```
+_Make sure the repository is on GitHub and publicly visible._
+
+### Deployment
+1. Navigate to **+New** and select **Web Service**.
+2. In the **Source Code** section, select **Public Git Repos**.
+3. Enter the GitHub repository URL and click **Create**.
+4. Verify that the source code is from the intended repository.
+5. Complete the following fields:
+   - **Name**: (Recommended to use the repo name)
+   - **Project** and **Production** (optional)
+   - **Branch**: (Recommended to use `main` for production)
+   - **Region**: Oregon (US West) — no change required
+   - **Root Directory**: Specify if `index.js` is not in the root directory; otherwise, leave blank
+   - **Build Command**: `npm install` (only needed for frontend builds; Express.js and Node.js require package installation only)
+   - **Start Command**: `node index.js`
+   - **Instance Type**: Select **Free**
+   - **Environment Variables**: Add manually (key and value) or from `.env`
+
+6. Click **Deploy**.
